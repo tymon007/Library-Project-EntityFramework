@@ -10,6 +10,10 @@ namespace LibraryProject
     {
         static void Main(string[] args)
         {
+            while (true)
+            {
+                UIHandling.mainMenu();
+            }
         }
     }
 }
