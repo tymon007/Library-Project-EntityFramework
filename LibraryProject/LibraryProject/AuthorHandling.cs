@@ -8,35 +8,23 @@ namespace LibraryProject
 {
     internal class AuthorHandling
     {
-        public static void AddAuthor(string surname, string name)
+        public static async Task AddAuthorAsync(string surname, string name)
         {
-            var context = new LibraryProjectEntities1();
-            var allAuthors = context.Authors.ToList();
-            int biggestID = 0;
-            foreach (var author in allAuthors)
+            using (var context = new LibraryProjectEntities1())
             {
-                if (author.AuthorID == null)
+                int newBiggestID = (context.Authors.Max(a => (int?)a.AuthorID) ?? 0) + 1;
+                var newAuthor = new Authors
                 {
-                    biggestID = 0;
-                }
-                else if (author.AuthorID > biggestID)
-                {
-                    biggestID = author.AuthorID;
-                }
+                    AuthorName = name,
+                    AuthorSurname = surname,
+                    AuthorID = newBiggestID
+                };
+
+                context.Authors.Add(newAuthor);
+                await context.SaveChangesAsync();
             }
-            int newBiggestID = biggestID + 1;
 
-            var newAuthor = new Authors
-            {
-                AuthorName = name,
-                AuthorSurname = surname,
-                AuthorID = newBiggestID
-            };
-
-            context.Authors.Add(newAuthor);
-            context.SaveChanges();
-
-            Console.WriteLine("Press any key to continue, the author was added");
+            Console.WriteLine("Press any key to continue, the author was added.");
             Console.ReadLine();
         }
 

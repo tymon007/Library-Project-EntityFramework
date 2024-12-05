@@ -12,40 +12,27 @@ namespace LibraryProject
 {
     internal class BooksHandling
     {
-        public static void AddBook(string bookTitle, DateTime publishedDate, string bookContent, int authorID)
+        public static async Task AddBookAsync(string bookTitle, DateTime publishedDate, string bookContent, int authorID)
         {
-            var context = new LibraryProjectEntities1();
-            var allBooks = context.Books.ToList();
-            int biggestID = 0;
-            foreach (var book in allBooks) //refactor to autoincrement in SQL
+            using (var context = new LibraryProjectEntities1())
             {
-                if (book.BookID == null)
+                int newBiggestID = (context.Books.Max(b => (int?)b.BookID) ?? 0) + 1;
+                var newBook = new Books()
                 {
-                    biggestID = 0;
-                }
-                else if (book.BookID > biggestID)
-                {
-                    biggestID = book.BookID;
-                }
+                    BookID = newBiggestID,
+                    BookContent = bookContent,
+                    BookTitle = bookTitle,
+                    AuthorID = authorID,
+                    PublishedDate = publishedDate,
+                };
+                context.Books.Add(newBook);
+                await context.SaveChangesAsync();
             }
-            int newbiggestID = biggestID + 1;
-
-            var newBook = new Books()
-            { 
-                BookID = newbiggestID,
-                BookContent = bookContent,
-                BookTitle = bookTitle,
-                AuthorID = authorID,
-                PublishedDate = publishedDate,
-            };
-
-            context.Books.Add(newBook);
-            context.SaveChanges(); //async await
-
-            Console.WriteLine("Press any key to continue, the book was added");
+            Console.WriteLine("Press any key to continue, the book was added.");
             Console.ReadLine();
         }
-        
+
+
         public static void ListAllBooks()
         {
             var context = new LibraryProjectEntities1();

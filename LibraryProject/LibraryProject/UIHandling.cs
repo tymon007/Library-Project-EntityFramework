@@ -58,7 +58,7 @@ namespace LibraryProject
                 string authorName = Console.ReadLine();
                 try
                 {
-                    AuthorHandling.AddAuthor(authorSurname, authorName);
+                    AuthorHandling.AddAuthorAsync(authorSurname, authorName).Wait();
                 }
                 catch (Exception e)
                 {
@@ -118,7 +118,7 @@ namespace LibraryProject
 
                 try
                 {
-                    BooksHandling.AddBook(bookTitle, bookDate, bookContent, bookAuthorID);
+                    BooksHandling.AddBookAsync(bookTitle, bookDate, bookContent, bookAuthorID).Wait();
                 }
                 catch (Exception e)
                 {
